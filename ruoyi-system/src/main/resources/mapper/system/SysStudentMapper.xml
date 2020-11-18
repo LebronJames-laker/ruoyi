@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysStudentMapper">
+
+    <resultMap type="SysStudent" id="SysStudentResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="age"    column="age"    />
+        <result property="sex"    column="sex"    />
+        <result property="sort"    column="sort"    />
+        <result property="pic"    column="pic"    />
+    </resultMap>
+
+    <sql id="selectSysStudentVo">
+        select id, name, age, sex, sort, pic from sys_student
+    </sql>
+
+    <select id="selectSysStudentList" parameterType="SysStudent" resultMap="SysStudentResult">
+        <include refid="selectSysStudentVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="age != null  and age != ''"> and age = #{age}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="pic != null "> and pic = #{pic}</if>
+        </where>
+        order by sort desc
+    </select>
+
+    <select id="selectSysStudentById" parameterType="Long" resultMap="SysStudentResult">
+        <include refid="selectSysStudentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysStudent" parameterType="SysStudent">
+        insert into sys_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="age != null">age,</if>
+            <if test="sex != null">sex,</if>
+            <if test="sort != null">sort,</if>
+            <if test="pic != pic">sort,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="age != null">#{age},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="pic != null">#{pic},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysStudent" parameterType="SysStudent">
+        update sys_student
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="sort != null">sort = #{sort},</if>
+            <if test="pic != null">pic = #{pic},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysStudentById" parameterType="Long">
+        delete from sys_student where id = #{id}
+    </delete>
+
+    <delete id="deleteSysStudentByIds" parameterType="String">
+        delete from sys_student where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="toTop" parameterType="Long">
+        update sys_student
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sort != null">
+                sort = #{sort}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateStuHeadPic" parameterType="SysStudent">
+ 		update sys_student
+        <!--<trim prefix="SET" suffixOverrides=",">
+            <if test="pic != null">
+                pic = #{pic}
+            </if>
+        </trim>-->
+         SET pic = #{pic}
+         where stu.id = #{id}
+	</update>
+
+
+</mapper>
