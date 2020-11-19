@@ -21,8 +21,11 @@
       </el-form-item>
       <el-form-item label="选择性别" prop="sex">
         <el-select v-model="queryParams.sex" placeholder="请选择性别" clearable size="small">
-          <el-option label="男" value="男" />
-          <el-option label="女" value="女" />
+          <el-option
+          v-for="sex in sexes",
+          :label="sex",
+          :value="sex"
+          />
         </el-select>
       </el-form-item>
      <!-- <el-form-item label="${comment}" prop="sort">
@@ -226,6 +229,8 @@ export default {
   },
   data() {
     return {
+      // 性别列表
+      sexes: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -284,7 +289,9 @@ export default {
   },
   created() {
     this.getList();
-
+    this.getDicts("sys_user_sex").then(response => {
+      this.sexes = response.data;
+    });
   },
   methods: {
     // 编辑头像

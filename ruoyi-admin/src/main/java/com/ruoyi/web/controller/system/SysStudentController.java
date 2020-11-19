@@ -36,8 +36,6 @@ public class SysStudentController extends BaseController
 {
     @Autowired
     private ISysStudentService sysStudentService;
-    // 默认排序的值
-    private static long sortNum;
 
     @Autowired
     private TokenService tokenService;
@@ -52,9 +50,6 @@ public class SysStudentController extends BaseController
     {
         startPage();
         List<SysStudent> list = sysStudentService.selectSysStudentList(sysStudent);
-        Long asInt = list.stream().mapToLong(student -> student.getSort()).max().getAsLong();
-        sortNum = asInt;
-        System.out.println("asInt = " + asInt);
         return getDataTable(list);
     }
 
@@ -119,6 +114,8 @@ public class SysStudentController extends BaseController
      */
     @GetMapping("/top/{id}/{sort}")
     public AjaxResult toTop(@PathVariable(name = "id") String id, @PathVariable(name = "sort") String sort) {
+        List<SysStudent> list = sysStudentService.selectSysStudentList(null);
+        Long sortNum = list.stream().mapToLong(student -> student.getSort()).max().getAsLong();
         sortNum ++;
         return toAjax(sysStudentService.toTop(Long.parseLong(id),sortNum));
     }
@@ -136,11 +133,14 @@ public class SysStudentController extends BaseController
      */
     @PostMapping("/uploadHeadPic")
     public AjaxResult updateStuHeadPic(@RequestParam("headPicFile") MultipartFile file, @RequestParam("stuId") Long stuId) throws IOException {
-        if (file.isEmpty()) return AjaxResult.error("上传图片异常，请联系管理员");
-
+        if (file.isEmpty()) {
+            return AjaxResult.error("上传图片异常，请联系管理员");
+        }
         String picUrl = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file);
         boolean updateStuHeadPic = sysStudentService.updateStuHeadPic(stuId, picUrl);
-        if (!updateStuHeadPic) return AjaxResult.error("上传图片异常，请联系管理员");
+        if (!updateStuHeadPic) {
+            return AjaxResult.error("上传图片异常，请联系管理员");
+        }
         System.out.println("picUrl = " + picUrl);
         AjaxResult ajax = AjaxResult.success();
         ajax.put("imgUrl", picUrl);
