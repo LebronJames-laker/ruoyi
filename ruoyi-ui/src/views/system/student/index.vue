@@ -22,8 +22,8 @@
       <el-form-item label="选择性别" prop="sex">
         <el-select v-model="queryParams.sex" placeholder="请选择性别" clearable size="small">
           <el-option
-          v-for="sex in sexes",
-          :label="sex",
+          v-for="sex in sexes"
+          :label="sex"
           :value="sex"
           />
         </el-select>

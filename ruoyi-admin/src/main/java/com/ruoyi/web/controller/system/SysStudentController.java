@@ -114,15 +114,12 @@ public class SysStudentController extends BaseController
      */
     @GetMapping("/top/{id}/{sort}")
     public AjaxResult toTop(@PathVariable(name = "id") String id, @PathVariable(name = "sort") String sort) {
-        List<SysStudent> list = sysStudentService.selectSysStudentList(null);
-        Long sortNum = list.stream().mapToLong(student -> student.getSort()).max().getAsLong();
-        sortNum ++;
-        return toAjax(sysStudentService.toTop(Long.parseLong(id),sortNum));
-    }
 
-    @GetMapping("/getUrl/{url}")
-    public String getUrl(@PathVariable(name = "url") String url) {
-        return "http://localhost:9090/"+url;
+        /*List<SysStudent> list = sysStudentService.selectSysStudentList(null);
+        Long sortNum = list.stream().mapToLong(student -> student.getSort()).max().getAsLong();*/
+        // 得到最大的排序值
+        long sortNum = sysStudentService.getTopSortNum();
+        return toAjax(sysStudentService.toTop(Long.parseLong(id),++sortNum));
     }
 
     /**
@@ -141,51 +138,9 @@ public class SysStudentController extends BaseController
         if (!updateStuHeadPic) {
             return AjaxResult.error("上传图片异常，请联系管理员");
         }
-        System.out.println("picUrl = " + picUrl);
         AjaxResult ajax = AjaxResult.success();
         ajax.put("imgUrl", picUrl);
         return ajax;
 
     }
-
-    /**
-     *  更新学生头像
-     */
-    @PostMapping("/updateStuPic/{id}")
-    public AjaxResult updateSingerPic(@RequestParam("file") MultipartFile file, @PathVariable("id") Long id) {
-        if (file.isEmpty()) {
-            return AjaxResult.error("上传头像失败");
-        }
-        //修改文件名
-        String fileName = System.currentTimeMillis() + file.getOriginalFilename();
-        //文件上传路径
-        String filePath = System.getProperty("user.dir")+System.getProperty("file.separator")+"img"+
-                System.getProperty("file.separator")+"stuHeadPic";
-        File file1 = new File(filePath);
-        //如果文件路径不存在，则创建
-        if (!file1.exists()) {
-            file1.mkdir();
-        }
-        //图片文件存储位置
-        File destFilePath = new File(filePath + System.getProperty("file.separator") + fileName);
-        //存储到数据库的相对地址
-        String storeAvatorPath = "/img/stuHeadPic/"+fileName;
-
-        try {
-            file.transferTo(destFilePath);
-            //更新学生的头像地址
-            SysStudent student = new SysStudent();
-            student.setId(id);
-            student.setPic(storeAvatorPath);
-            int result = sysStudentService.updateSysStudent(student);
-            if (result > 0) {
-                return AjaxResult.success("头像上传成功");
-            }
-            return AjaxResult.error("上传头像失败");
-        } catch (IOException e) {
-            return AjaxResult.error(e.getMessage());
-        }
-
-    }
-
 }
