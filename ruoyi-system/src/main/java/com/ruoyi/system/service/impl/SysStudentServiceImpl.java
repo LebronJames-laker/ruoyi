@@ -114,7 +114,15 @@ public class SysStudentServiceImpl implements ISysStudentService
         SysStudent student = new SysStudent();
         student.setId(stuId);
         student.setPic(picUrl);
-        System.out.println("student.getPic() = " + student.getPic());
         return sysStudentMapper.updateSysStudent(student) > 0;
+    }
+
+    /**
+     * 得到排序最大值
+     * @return
+     */
+    @Override
+    public long getTopSortNum() {
+        return sysStudentMapper.getTopSortNum();
     }
 }

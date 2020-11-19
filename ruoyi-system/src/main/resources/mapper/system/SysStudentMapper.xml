@@ -89,14 +89,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <update id="updateStuHeadPic" parameterType="SysStudent">
  		update sys_student
-        <!--<trim prefix="SET" suffixOverrides=",">
+        <trim prefix="SET" suffixOverrides=",">
             <if test="pic != null">
                 pic = #{pic}
             </if>
-        </trim>-->
-         SET pic = #{pic}
+        </trim>
          where stu.id = #{id}
 	</update>
 
+    <select id="getTopSortNum" resultType="long">
+        SELECT MAX(sort) FROM sys_student
+    </select>
 
 </mapper>

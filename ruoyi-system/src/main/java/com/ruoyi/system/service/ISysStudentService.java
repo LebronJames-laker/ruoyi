@@ -77,4 +77,6 @@ public interface ISysStudentService
      */
     boolean updateStuHeadPic(Long stuId, String picUrl);
 
+    long getTopSortNum();
+
 }

@@ -64,5 +64,17 @@ public interface SysStudentMapper
      */
     int deleteSysStudentByIds(Long[] ids);
 
+    /**
+     * 置顶数据
+     * @param id
+     * @param sort
+     * @return
+     */
     int toTop(@Param(value = "id") Long id, @Param(value = "sort")Long sort);
+
+    /**
+     * 得到排序的最大值
+     * @return
+     */
+    long getTopSortNum();
 }
